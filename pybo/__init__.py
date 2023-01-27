@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import MetaData
@@ -14,6 +14,9 @@ naming_convention = {
 }
 db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
 migrate = Migrate()
+
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 
 def create_app():
@@ -37,5 +40,7 @@ def create_app():
     app.jinja_env.filters['datetime'] = format_datetime
 
     Markdown(app, extension=['nl2br', 'fenced_code'])
+
+    app.register_error_handler(404, page_not_found)
 
     return app
